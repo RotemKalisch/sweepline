@@ -46,3 +46,8 @@ def test_intersection():
     assert intersects(s2, s1)
 
     assert not intersects(Segment(a, b), Segment(c, d))
+
+
+def test_segment_calc_y():
+    s = Segment(Point(0, -4), Point(2, 4))
+    assert s.calculate_y(1) == pytest.approx(0)
