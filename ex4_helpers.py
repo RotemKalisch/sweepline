@@ -36,6 +36,11 @@ class Segment:
             raise ValueError("calculate_y out of bounds")
         return self.a() * x + self.b()
 
+    def __eq__(self, other: "Segment") -> bool:
+        return (
+            self.id == other.id
+        )  # We never copy segments, this is for validations only.
+
 
 def is_left_turn(a: Point, b: Point, c: Point) -> bool:
     x1 = a.x

@@ -2,59 +2,8 @@ from abc import abstractclass, abstracmethod
 from enum import Enum
 import heapq
 
-from sortedcontainers import SortedList
-
 from ex4_helpers import Point, Segment, intersection
-
-
-class SweeplineStatus:
-    global_x: float = 0.0
-
-    class StatusNode:
-        segment: Segment
-        less_than_id: (
-            int | None
-        )  # Optional marker to swap two segments. Added robustness to floating point errors.
-
-        def __init__(self, segment: Segment):
-            self.segment = segment
-
-        def __eq__(self, other: "SweeplineStatus.StatusNode") -> bool:
-            return self.segment.id == other.segment.id
-
-        def __lt__(self, other: "SweeplineStatus.StatusNode") -> bool:
-            if self.sweepline_status.less_than_id == other.id:
-                return True
-            else:
-                return self.segment.calculate_y(
-                    SweeplineStatus.global_x
-                ) < other.segment.calculate_y(SweeplineStatus.global_x)
-
-    status: SortedList[StatusNode]
-
-    def __init__(self, initial_x: float):
-        SweeplineStatus.global_x = initial_x
-
-    def insert(self, segment: Segment) -> None:
-        self.status.add(SweeplineStatus.StatusNode(segment))
-
-    def remove(self, segment: Segment) -> None:
-        self.status.remove(SweeplineStatus.StatusNode(segment))
-
-    def index(self, segment: Segment) -> int:
-        return self.status.bisect_left(SweeplineStatus.StatusNode(segment))
-
-    def swap(self, segment1, segment2) -> None:
-        """
-        Assuming segment1 > segment2 up until now, and from now segmetn1 < segment2.
-        """
-        if segment2.a() < segment1.a():
-            raise ValueError("Segments are not in expected order for swap")
-        node = SweeplineStatus.StatusNode(segment1)
-        self.status.remove(node)
-        node.less_than_id = segment2.id
-        self.status.add(node)
-        node.less_than_id = None
+from status import Status
 
 
 class EventType(Enum):
@@ -99,7 +48,7 @@ class StartEvent(SweeplineEvent):
         super().__init__(x)
         self.segment = segment
 
-    def handle(self, status: SweeplineStatus) -> list[SweeplineEvent]:
+    def handle(self, status: Status) -> list[SweeplineEvent]:
         status.insert(self.segment)
         return []
 
@@ -130,7 +79,7 @@ class IntersectionEvent(SweeplineEvent):
         else:
             return None
 
-    def handle(self, status: SweeplineStatus) -> list[SweeplineEvent]:
+    def handle(self, status: Status) -> list[SweeplineEvent]:
         future_events = []
         status.swap(self.segment1, self.segment2)
         lower_index = status.index(self.segment1)
@@ -173,7 +122,7 @@ class EndEvent(SweeplineEvent):
 class Sweepline:
     segments: list[Segment]
     event_heap: list[Point]
-    status: SweeplineStatus
+    status: Status
     swap: None
 
     def __init__(self, segments: list[Segment]):
@@ -188,12 +137,13 @@ class Sweepline:
                 self.event_heap,
                 EndEvent(x=self.segments[i].q.x),
             )
-        self.status = SweeplineStatus(self.event_heap[0].x)
+        self.status = Status(self.event_heap[0].x)
 
     def intersection_points(self) -> list[Point]:
         retval = []
         while len(self.event_heap) > 0:
             event = heapq.heappop(self.event_heap)
+            self.status.global_x = event.x
             new_events = event.handle()
             for event in new_events:
                 heapq.heappush(self.event_heap, event)
