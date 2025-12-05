@@ -16,6 +16,9 @@ class Status:
             self.segment = segment
             self.less_than_id = None
 
+        def __repr__(self) -> str:
+            return f"Node(segment={self.segment}, less_than_id={self.less_than_id})"
+
         def __eq__(self, other: "Status.Node") -> bool:
             return self.segment.id == other.segment.id
 
@@ -44,6 +47,9 @@ class Status:
     def __getitem__(self, index: int) -> Segment:
         return self.bst[index].segment
 
+    def __repr__(self) -> str:
+        return f"Status(global_x={Status.global_x}, bst={self.bst})"
+
     def is_ordered(self) -> bool:  # for validations
         for i in range(1, len(self.bst)):
             if not self.bst[i - 1] < self.bst[i]:
@@ -51,9 +57,11 @@ class Status:
         return True
 
     def insert(self, segment: Segment) -> None:
+        # TODO check intersections!
         self.bst.add(Status.Node(segment))
 
     def remove(self, segment: Segment) -> None:
+        # TODO check intersections!
         self.bst.remove(Status.Node(segment))
 
     def index(self, segment: Segment) -> int:

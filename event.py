@@ -28,17 +28,21 @@ class Event:
     def __init__(self, x: float):
         self.x = x
 
-    def __le__(self, other: "Event") -> bool:
+    def __lt__(self, other: "Event") -> bool:
         if self.x != other.x:
             return self.x < other.x
         return self.event_type.value < other.event_type.value
 
     @abstractmethod
-    def handle(self) -> list["Event"]:
+    def __repr__(self) -> str:
         pass
 
     @abstractmethod
     def __eq__(self, other) -> bool:
+        pass
+
+    @abstractmethod
+    def handle(self, status: Status) -> list["Event"]:
         pass
 
 
@@ -49,6 +53,9 @@ class StartEvent(Event):
     def __init__(self, x: float, segment: Segment):
         super().__init__(x)
         self.segment = segment
+
+    def __repr__(self) -> str:
+        return f"StartEvent(x={self.x}, segment={self.segment})"
 
     def __eq__(self, other) -> bool:
         assert (
@@ -70,6 +77,9 @@ class IntersectionEvent(Event):
         super().__init__(x)
         self.segment1 = segment1  # coming from above
         self.segment2 = segment2  # coming from below
+
+    def __repr__(self) -> str:
+        return f"IntersectionEvent(x={self.x}, segment1={self.segment1}, segment2={self.segment2})"
 
     def __eq__(self, other) -> bool:
         return (
@@ -119,6 +129,9 @@ class EndEvent(Event):
         super().__init__(x)
         self.event_type = EventType.END
         self.segment = segment
+
+    def __repr__(self) -> str:
+        return f"EndEvent(x={self.x}, segment={self.segment})"
 
     def __eq__(self, other) -> bool:
         return other.event_type == EventType.END and self.segment == other.segment

@@ -5,23 +5,23 @@ from status import Status
 from event import StartEvent, IntersectionEvent, EndEvent
 
 
-class Sweepline:
+class SweepLine:
     segments: list[Segment]
     event_heap: list[Point]
     status: Status
-    swap: None
 
     def __init__(self, segments: list[Segment]):
         self.segments = segments
         self.event_heap = []
         for i in range(len(self.segments)):
+            segment = self.segments[i]
             heapq.heappush(
                 self.event_heap,
-                StartEvent(x=self.segments[i].p.x),
+                StartEvent(x=segment.p.x, segment=segment),
             )
             heapq.heappush(
                 self.event_heap,
-                EndEvent(x=self.segments[i].q.x),
+                EndEvent(x=segment.q.x, segment=segment),
             )
         self.status = Status(self.event_heap[0].x)
 
@@ -29,8 +29,8 @@ class Sweepline:
         retval = []
         while len(self.event_heap) > 0:
             event = heapq.heappop(self.event_heap)
-            self.status.global_x = event.x
-            new_events = event.handle()
+            Status.global_x = event.x
+            new_events = event.handle(self.status)
             for event in new_events:
                 heapq.heappush(self.event_heap, event)
             if isinstance(event, IntersectionEvent):

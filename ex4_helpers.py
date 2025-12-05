@@ -35,7 +35,7 @@ class Segment:
         return self.p.y - (self.a() * self.p.x)
 
     def calculate_y(self, x: Point) -> float:
-        if x < min(self.p.x, self.q.x) or x > max(self.p.x, self.q.x):
+        if x < self.p.x or x > self.q.x:
             raise ValueError("calculate_y out of bounds")
         return self.a() * x + self.b()
 
@@ -45,7 +45,7 @@ class Segment:
         )  # We never copy segments, this is for validations only.
 
     def __repr__(self) -> str:
-        return f"Segment({self.p}, {self.q})"
+        return f"Segment({self.id},{self.p}, {self.q})"
 
 
 def is_left_turn(a: Point, b: Point, c: Point) -> bool:
