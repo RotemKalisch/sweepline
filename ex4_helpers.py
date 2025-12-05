@@ -9,6 +9,9 @@ class Point:
         self.x = x
         self.y = y
 
+    def __repr__(self) -> str:
+        return f"Point({self.x}, {self.y})"
+
 
 class Segment:
     id_generator = count()
@@ -40,6 +43,9 @@ class Segment:
         return (
             self.id == other.id
         )  # We never copy segments, this is for validations only.
+
+    def __repr__(self) -> str:
+        return f"Segment({self.p}, {self.q})"
 
 
 def is_left_turn(a: Point, b: Point, c: Point) -> bool:
