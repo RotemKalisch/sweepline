@@ -1,3 +1,6 @@
+from itertools import count
+
+
 class Point:
     x: float
     y: float
@@ -8,10 +11,14 @@ class Point:
 
 
 class Segment:
+    id_generator = count()
+
+    id: int
     p: Point
     q: Point
 
     def __init__(self, p: Point, q: Point):
+        self.id = next(Segment.id_generator)
         if p.x > q.x:
             p, q = q, p
         self.p = p
@@ -40,7 +47,7 @@ def is_left_turn(a: Point, b: Point, c: Point) -> bool:
     return ((x1 * (y2 - y3)) + (x2 * (y3 - y1)) + (x3 * (y1 - y2))) > 0
 
 
-def intersection(s1: Segment, s2: Segment):
+def intersection(s1: Segment, s2: Segment) -> Point | None:
     if (is_left_turn(s1.p, s1.q, s2.p) != is_left_turn(s1.p, s1.q, s2.q)) and (
         is_left_turn(s2.p, s2.q, s1.p) != is_left_turn(s2.p, s2.q, s1.q)
     ):
@@ -62,9 +69,9 @@ def intersection(s1: Segment, s2: Segment):
         x = (b2 - b1) / (a1 - a2)
         y = a1 * x + b1
 
-        return Point(x, y)
-    else:
-        return None
+        if min(s1.p.x, s1.q.x) <= x and x <= max(s1.p.x, s1.q.x):
+            return Point(x, y)
+    return None
 
 
 def intersects(s1: Segment, s2: Segment) -> bool:
