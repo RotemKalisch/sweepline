@@ -21,7 +21,7 @@ class SweepLine:
             self.events.add(EndEvent(x=segment.q.x, segment=segment))
         self.status = Status(self.events[0].x)
 
-    def intersection_points(self) -> list[Point]:
+    def intersection_points(self, round: int | None = None) -> list[Point]:
         retval = []
         while len(self.events) > 0:
             event = self.events.pop(0)
@@ -39,4 +39,6 @@ class SweepLine:
                 if intersection_point is None:
                     raise ValueError("Intersection event with no intersection!")
                 retval.append(intersection_point)
+        if round is not None:
+            retval = [p.rounded(round) for p in retval]
         return retval

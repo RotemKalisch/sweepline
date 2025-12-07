@@ -2,7 +2,7 @@ from itertools import count
 
 
 class Point:
-    PRECISION: int = 3
+    PRECISION: int = 5
 
     x: float
     y: float
@@ -23,10 +23,11 @@ class Point:
             and self.rounded().y == other.rounded().y
         )
 
-    def rounded(self) -> "Point":
+    def rounded(self, precision=None) -> "Point":
+        precision = precision or Point.PRECISION
         return Point(
-            round(self.x, Point.PRECISION),
-            round(self.y, Point.PRECISION),
+            round(self.x, precision),
+            round(self.y, precision),
         )
 
 

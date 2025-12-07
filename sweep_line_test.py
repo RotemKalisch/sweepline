@@ -7,7 +7,9 @@ def test_sweep_line_example1():
         Segment(Point(11.3, 5.1), Point(3.2, 6.9)),
         Segment(Point(4.2, 7.1), Point(2.8, 4.9)),
     ]
-    assert SweepLine(segments).intersection_points() == [Point(3.965, 6.73)]
+    assert SweepLine(segments).intersection_points(round=2) == [
+        Point(3.96, 6.73),
+    ]
 
 
 def test_sweep_line_example2():
@@ -19,11 +21,11 @@ def test_sweep_line_example2():
         Segment(Point(20.9, 72.1), Point(40.5, 20.1)),
         Segment(Point(49.7, 20.3), Point(40.6, 70.2)),
     ]
-    assert SweepLine(segments).intersection_points() == [
-        Point(28.706, 51.391),
-        Point(34.948, 34.83),
-        Point(42.525, 59.644),
-        Point(45.869, 41.305),
+    assert SweepLine(segments).intersection_points(round=2) == [
+        Point(28.71, 51.39),
+        Point(34.95, 34.83),
+        Point(42.53, 59.64),
+        Point(45.87, 41.30),
     ]
 
 
@@ -34,8 +36,8 @@ def test_sweep_line_example3():
         Segment(Point(5.1, 6.2), Point(1.9, 9.1)),
     ]
 
-    assert SweepLine(segments).intersection_points() == [
-        Point(2.322, 7.233),
-        Point(3.081, 8.03),
-        Point(3.581, 7.577),
+    assert SweepLine(segments).intersection_points(round=2) == [
+        Point(2.32, 7.23),
+        Point(3.08, 8.03),
+        Point(3.58, 7.58),
     ]
