@@ -34,5 +34,5 @@ def test_status_swap():
     status = Status(initial_x=0, segments=segments)
     assert list(status) == segments
     status.global_x = 1.0
-    status.swap(segments[1], segments[0])
+    status.swap(segments[0], segments[1])
     assert list(status) == list(reversed(segments))

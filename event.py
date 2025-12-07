@@ -45,6 +45,21 @@ class Event:
     def handle(self, status: Status) -> list["Event"]:
         pass
 
+    def future_intersection(
+        self, current_x: float, status: Status, bottom_index: int
+    ) -> "Event":
+        bottom_segment = status[bottom_index]
+        top_segment = status[bottom_index + 1]
+        intersection_point = intersection(bottom_segment, top_segment)
+        if intersection_point is not None and intersection_point.x > current_x:
+            return IntersectionEvent(
+                x=intersection_point.x,
+                segment1=bottom_segment,
+                segment2=top_segment,
+            )
+        else:
+            return None
+
 
 class StartEvent(Event):
     event_type: EventType = EventType.START
@@ -63,8 +78,18 @@ class StartEvent(Event):
         )
 
     def handle(self, status: Status) -> list[Event]:
+        future_events = []
         status.insert(self.segment)
-        return []
+        index = status.index(self.segment)
+        if index > 0:
+            candidate = self.future_intersection(status.global_x, status, index - 1)
+            if candidate is not None:
+                future_events.append(candidate)
+        if index < len(status) - 1:
+            candidate = self.future_intersection(status.global_x, status, index)
+            if candidate is not None:
+                future_events.append(candidate)
+        return future_events
 
 
 class IntersectionEvent(Event):
@@ -75,8 +100,8 @@ class IntersectionEvent(Event):
 
     def __init__(self, x: float, segment1: Segment, segment2: Segment):
         super().__init__(x)
-        self.segment1 = segment1  # coming from above
-        self.segment2 = segment2  # coming from below
+        self.segment1 = segment1  # coming from below
+        self.segment2 = segment2  # coming from above
 
     def __repr__(self) -> str:
         return f"IntersectionEvent(x={self.x}, segment1={self.segment1}, segment2={self.segment2})"
@@ -84,38 +109,26 @@ class IntersectionEvent(Event):
     def __eq__(self, other) -> bool:
         return (
             other.event_type == EventType.INTERSECTION
+            and abs(self.x - other.x) < 1e-2  # sanity
             and self.segment1 == other.segment1
             and self.segment2 == other.segment2
         )
 
-    def future_intersection(
-        self, current_x: float, top_segment, bottom_segment
-    ) -> Event | None:
-        intersection_point = intersection(top_segment, bottom_segment)
-        if intersection_point is not None and intersection_point.x > current_x:
-            return IntersectionEvent(
-                x=intersection_point.x,
-                segment1=top_segment,
-                segment2=bottom_segment,
-            )
-        else:
-            return None
-
     def handle(self, status: Status) -> list[Event]:
         status.swap(self.segment1, self.segment2)
+        if status.index(self.segment1) < status.index(self.segment2):
+            raise ValueError("Segments not swapped correctly in status")
         future_events = []
-        lower_index = status.index(self.segment1)
+        lower_index = status.index(self.segment2)
         if lower_index > 0:
             candidate = self.future_intersection(
-                status.global_x, self.segment1, status[lower_index - 1]
+                status.global_x, status, lower_index - 1
             )
             if candidate is not None:
                 future_events.append(candidate)
-        upper_index = status.index(self.segment2)
+        upper_index = lower_index + 1
         if upper_index < len(status) - 1:
-            candidate = self.future_intersection(
-                status.global_x, status[upper_index + 1], self.segment2
-            )
+            candidate = self.future_intersection(status.global_x, status, upper_index)
             if candidate is not None:
                 future_events.append(candidate)
         return future_events
@@ -137,5 +150,11 @@ class EndEvent(Event):
         return other.event_type == EventType.END and self.segment == other.segment
 
     def handle(self, status: Status) -> list[Event]:
+        future_events = []
+        index = status.index(self.segment)
         status.remove(self.segment)
-        return []
+        if index > 0 and index < len(status):
+            candidate = self.future_intersection(status.global_x, status, index - 1)
+            if candidate is not None:
+                future_events.append(candidate)
+        return future_events

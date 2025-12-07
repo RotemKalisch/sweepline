@@ -57,24 +57,22 @@ class Status:
         return True
 
     def insert(self, segment: Segment) -> None:
-        # TODO check intersections!
         self.bst.add(Status.Node(segment))
 
     def remove(self, segment: Segment) -> None:
-        # TODO check intersections!
         self.bst.remove(Status.Node(segment))
 
     def index(self, segment: Segment) -> int:
-        return self.bst.bisect_left(Status.Node(segment))
+        return self.bst.index(Status.Node(segment))
 
     def swap(self, segment1, segment2) -> None:
         """
-        Assuming segment1 > segment2 up until now, and from now segmetn1 < segment2.
+        Assuming segment1 < segment2 up until now, and from now segment1 > segment2.
         """
-        if segment2.a() < segment1.a():
+        if segment2.a() > segment1.a():
             raise ValueError("Segments are not in expected order for swap")
-        node = Status.Node(segment1)
+        node = Status.Node(segment2)
         self.bst.remove(node)
-        node.less_than_id = segment2.id
+        node.less_than_id = segment1.id
         self.bst.add(node)
         node.less_than_id = None
