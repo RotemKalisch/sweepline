@@ -10,7 +10,7 @@ def test_status_construction():
     insertion_order = list(range(len(segments)))
     shuffle(insertion_order)
     for i in insertion_order:
-        status.insert(segments[i])
+        status.add(segments[i])
     assert len(status) == 5
     for i in range(len(status)):
         assert status[i] == segments[i]

@@ -6,27 +6,34 @@ from event import Event, StartEvent, IntersectionEvent, EndEvent
 
 
 class SweepLine:
+    EPSILON: int = 10 ** (-Point.PRECISION)
+
     segments: list[Segment]
     events: SortedList[Event]
     status: Status
 
     def __init__(self, segments: list[Segment]):
         self.segments = segments
-        self.event_heap = []
+        self.events = SortedList([])
         for i in range(len(self.segments)):
             segment = self.segments[i]
-            self.events.insert(StartEvent(x=segment.p.x, segment=segment))
-            self.events.insert(EndEvent(x=segment.q.x, segment=segment))
-        self.status = Status(self.event_heap[0].x)
+            self.events.add(StartEvent(x=segment.p.x, segment=segment))
+            self.events.add(EndEvent(x=segment.q.x, segment=segment))
+        self.status = Status(self.events[0].x)
 
     def intersection_points(self) -> list[Point]:
         retval = []
-        while len(self.event_heap) > 0:
-            event = self.event_heap.pop(0)
+        while len(self.events) > 0:
+            event = self.events.pop(0)
             Status.global_x = event.x
+            # Giving a little nudge to avoid floating point issues
+            Status.global_x += SweepLine.EPSILON * (
+                1 if isinstance(event, StartEvent) else -1
+            )
             new_events = event.handle(self.status)
-            for event in new_events:
-                self.event_heap.insert(event)
+            for new_event in new_events:
+                if new_event not in self.events:
+                    self.events.add(new_event)
             if isinstance(event, IntersectionEvent):
                 intersection_point = intersection(event.segment1, event.segment2)
                 if intersection_point is None:

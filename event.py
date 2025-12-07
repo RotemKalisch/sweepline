@@ -79,7 +79,7 @@ class StartEvent(Event):
 
     def handle(self, status: Status) -> list[Event]:
         future_events = []
-        status.insert(self.segment)
+        status.add(self.segment)
         index = status.index(self.segment)
         if index > 0:
             candidate = self.future_intersection(status.global_x, status, index - 1)
@@ -115,11 +115,11 @@ class IntersectionEvent(Event):
         )
 
     def handle(self, status: Status) -> list[Event]:
-        status.swap(self.segment1, self.segment2)
-        if status.index(self.segment1) < status.index(self.segment2):
+        if status.index(self.segment1) > status.index(self.segment2):
             raise ValueError("Segments not swapped correctly in status")
+        lower_index = status.index(self.segment1)
+        status.swap(self.segment1, self.segment2)
         future_events = []
-        lower_index = status.index(self.segment2)
         if lower_index > 0:
             candidate = self.future_intersection(
                 status.global_x, status, lower_index - 1

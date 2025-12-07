@@ -2,6 +2,8 @@ from itertools import count
 
 
 class Point:
+    PRECISION: int = 3
+
     x: float
     y: float
 
@@ -11,6 +13,21 @@ class Point:
 
     def __repr__(self) -> str:
         return f"Point({self.x}, {self.y})"
+
+    def __eq__(self, other: "Point") -> bool:
+        """
+        For testing, we assume all unique points are 1e-3 away from each other.
+        """
+        return (
+            self.rounded().x == other.rounded().x
+            and self.rounded().y == other.rounded().y
+        )
+
+    def rounded(self) -> "Point":
+        return Point(
+            round(self.x, Point.PRECISION),
+            round(self.y, Point.PRECISION),
+        )
 
 
 class Segment:

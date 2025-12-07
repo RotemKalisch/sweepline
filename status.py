@@ -36,7 +36,7 @@ class Status:
         Status.global_x = initial_x
         self.bst = SortedList()
         for segment in segments:
-            self.insert(segment)
+            self.add(segment)
 
     def __iter__(self):
         return (node.segment for node in self.bst)
@@ -56,16 +56,17 @@ class Status:
                 return False
         return True
 
-    def insert(self, segment: Segment) -> None:
+    def add(self, segment: Segment) -> None:
         self.bst.add(Status.Node(segment))
 
     def remove(self, segment: Segment) -> None:
         self.bst.remove(Status.Node(segment))
 
     def index(self, segment: Segment) -> int:
-        return self.bst.index(Status.Node(segment))
+        retval = self.bst.index(Status.Node(segment))
+        return retval
 
-    def swap(self, segment1, segment2) -> None:
+    def swap(self, segment1, segment2) -> int:
         """
         Assuming segment1 < segment2 up until now, and from now segment1 > segment2.
         """

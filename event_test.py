@@ -19,7 +19,7 @@ SEGMENT3 = Segment(Point(0, -1), Point(6, -1))
 class MockStatus(list):
     global_x: float = 0.0
 
-    def insert(self, segment: Segment) -> None:
+    def add(self, segment: Segment) -> None:
         self.append(segment)
         self.sort(key=lambda segment: segment.calculate_y(MockStatus.global_x))
 
