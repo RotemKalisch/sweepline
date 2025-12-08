@@ -1,7 +1,8 @@
 from abc import abstractmethod
 from enum import Enum
 
-from ex4_helpers import Point, Segment, intersection
+from point import Point
+from ex4_helpers import Segment, intersection
 from status import Status
 
 

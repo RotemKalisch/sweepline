@@ -1,4 +1,5 @@
-from ex4_helpers import Point, Segment
+from point import Point
+from ex4_helpers import Segment
 from sweep_line import SweepLine
 
 from hw4 import parse_problems

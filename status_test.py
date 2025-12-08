@@ -1,4 +1,5 @@
-from ex4_helpers import Point, Segment
+from point import Point
+from ex4_helpers import Segment
 from status import Status
 
 from random import shuffle

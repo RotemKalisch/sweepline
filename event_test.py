@@ -1,4 +1,5 @@
-from ex4_helpers import Segment, Point
+from point import Point
+from ex4_helpers import Segment
 from event import StartEvent, IntersectionEvent, EndEvent
 
 

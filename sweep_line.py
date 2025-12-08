@@ -1,6 +1,7 @@
 from sortedcontainers import SortedList
 
-from ex4_helpers import Point, Segment, intersection
+from point import Point
+from ex4_helpers import Segment, intersection
 from status import Status
 from event import Event, StartEvent, IntersectionEvent, EndEvent
 

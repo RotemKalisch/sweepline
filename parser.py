@@ -1,4 +1,5 @@
-from ex4_helpers import Point, Segment
+from point import Point
+from ex4_helpers import Segment
 
 
 def parse_problem(lines: list[str], line_index: int) -> list[Segment]:

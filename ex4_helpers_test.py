@@ -1,6 +1,7 @@
 import pytest
 
-from ex4_helpers import Point, Segment, is_left_turn, intersection, intersects
+from point import Point
+from ex4_helpers import Segment, is_left_turn, intersection, intersects
 
 
 def test_segment_ordered():
