@@ -37,6 +37,36 @@ class Segment:
     def __repr__(self) -> str:
         return f"Segment({self.p}, {self.q})"
 
+    def intersection(self, other: "Segment") -> Point | None:
+        if (
+            is_left_turn(self.p, self.q, other.p)
+            != is_left_turn(self.p, self.q, other.q)
+        ) and (
+            is_left_turn(other.p, other.q, self.p)
+            != is_left_turn(other.p, other.q, self.q)
+        ):
+            a1 = self.a()
+            a2 = other.a()
+
+            b1 = self.b()
+            b2 = other.b()
+
+            # commutation consistency: sort by a (then by b)
+            if a1 > a2 or (a1 == a2 and b1 > b2):
+                a1, a2 = a2, a1
+                b1, b2 = b2, b1
+
+            # a1 x + b1 = y
+            # a2 x + b2 = y
+            # (a1 - a2)x + (b1-b2) = 0
+            # x = (b2-b1)/(a1-a2)
+            x = (b2 - b1) / (a1 - a2)
+            y = a1 * x + b1
+
+            if min(self.p.x, self.q.x) <= x and x <= max(self.p.x, self.q.x):
+                return Point(x, y)
+        return None
+
 
 def is_left_turn(a: Point, b: Point, c: Point) -> bool:
     x1 = a.x
@@ -46,34 +76,3 @@ def is_left_turn(a: Point, b: Point, c: Point) -> bool:
     y2 = b.y
     y3 = c.y
     return ((x1 * (y2 - y3)) + (x2 * (y3 - y1)) + (x3 * (y1 - y2))) > 0
-
-
-def intersection(s1: Segment, s2: Segment) -> Point | None:
-    if (is_left_turn(s1.p, s1.q, s2.p) != is_left_turn(s1.p, s1.q, s2.q)) and (
-        is_left_turn(s2.p, s2.q, s1.p) != is_left_turn(s2.p, s2.q, s1.q)
-    ):
-        a1 = s1.a()
-        a2 = s2.a()
-
-        b1 = s1.b()
-        b2 = s2.b()
-
-        # commutation consistency: sort by a (then by b)
-        if a1 > a2 or (a1 == a2 and b1 > b2):
-            a1, a2 = a2, a1
-            b1, b2 = b2, b1
-
-        # a1 x + b1 = y
-        # a2 x + b2 = y
-        # (a1 - a2)x + (b1-b2) = 0
-        # x = (b2-b1)/(a1-a2)
-        x = (b2 - b1) / (a1 - a2)
-        y = a1 * x + b1
-
-        if min(s1.p.x, s1.q.x) <= x and x <= max(s1.p.x, s1.q.x):
-            return Point(x, y)
-    return None
-
-
-def intersects(s1: Segment, s2: Segment) -> bool:
-    return intersection(s1, s2) is not None

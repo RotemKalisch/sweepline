@@ -1,7 +1,7 @@
 from sortedcontainers import SortedList
 
 from point import Point
-from ex4_helpers import Segment, intersection
+from segment import Segment
 from status import Status
 from event import Event, StartEvent, IntersectionEvent, EndEvent
 
@@ -36,7 +36,7 @@ class SweepLine:
                 if new_event not in self.events:
                     self.events.add(new_event)
             if isinstance(event, IntersectionEvent):
-                intersection_point = intersection(event.segment1, event.segment2)
+                intersection_point = event.intersection_point
                 if intersection_point is None:
                     raise ValueError("Intersection event with no intersection!")
                 retval.append(intersection_point)

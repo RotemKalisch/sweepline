@@ -1,6 +1,6 @@
 from sortedcontainers import SortedList
 
-from ex4_helpers import Segment
+from segment import Segment
 
 
 class Status:

@@ -2,7 +2,7 @@ from abc import abstractmethod
 from enum import Enum
 
 from point import Point
-from ex4_helpers import Segment, intersection
+from segment import Segment
 from status import Status
 
 
@@ -51,7 +51,7 @@ class Event:
     ) -> "Event":
         bottom_segment = status[bottom_index]
         top_segment = status[bottom_index + 1]
-        intersection_point = intersection(bottom_segment, top_segment)
+        intersection_point = bottom_segment.intersection(top_segment)
         if intersection_point is not None and intersection_point.x > current_x:
             return IntersectionEvent(
                 x=intersection_point.x,
@@ -103,6 +103,7 @@ class IntersectionEvent(Event):
         super().__init__(x)
         self.segment1 = segment1  # coming from below
         self.segment2 = segment2  # coming from above
+        self.intersection_point = segment1.intersection(segment2)
 
     def __repr__(self) -> str:
         return f"IntersectionEvent(x={self.x}, segment1={self.segment1}, segment2={self.segment2})"

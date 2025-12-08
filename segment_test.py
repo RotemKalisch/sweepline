@@ -1,7 +1,7 @@
 import pytest
 
 from point import Point
-from ex4_helpers import Segment, is_left_turn, intersection, intersects
+from segment import Segment, is_left_turn
 
 
 def test_segment_ordered():
@@ -38,15 +38,12 @@ def test_intersection():
     s2 = Segment(b, d)
 
     expected_intersection = Point(0.5, 0.5)
-    actual_intersection = intersection(s1, s2)
+    actual_intersection = s1.intersection(s2)
     assert actual_intersection is not None
     assert actual_intersection.x == pytest.approx(expected_intersection.x)
     assert actual_intersection.y == pytest.approx(expected_intersection.y)
 
-    assert intersects(s1, s2)
-    assert intersects(s2, s1)
-
-    assert not intersects(Segment(a, b), Segment(c, d))
+    assert not Segment(a, b).intersection(Segment(c, d))
 
 
 def test_segment_calc_y():

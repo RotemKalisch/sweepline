@@ -1,5 +1,5 @@
 from point import Point
-from ex4_helpers import Segment
+from segment import Segment
 from sweep_line import SweepLine
 
 
