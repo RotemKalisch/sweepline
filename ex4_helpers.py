@@ -63,7 +63,7 @@ class Segment:
         )  # We never copy segments, this is for validations only.
 
     def __repr__(self) -> str:
-        return f"Segment({self.id},{self.p}, {self.q})"
+        return f"Segment({self.p}, {self.q})"
 
 
 def is_left_turn(a: Point, b: Point, c: Point) -> bool:
