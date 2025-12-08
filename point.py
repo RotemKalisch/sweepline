@@ -26,3 +26,13 @@ class Point:
             round(self.x, precision),
             round(self.y, precision),
         )
+
+
+def is_left_turn(a: Point, b: Point, c: Point) -> bool:
+    x1 = a.x
+    x2 = b.x
+    x3 = c.x
+    y1 = a.y
+    y2 = b.y
+    y3 = c.y
+    return ((x1 * (y2 - y3)) + (x2 * (y3 - y1)) + (x3 * (y1 - y2))) > 0

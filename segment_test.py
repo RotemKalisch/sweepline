@@ -1,7 +1,7 @@
 import pytest
 
 from point import Point
-from segment import Segment, is_left_turn
+from segment import Segment
 
 
 def test_segment_ordered():
@@ -10,22 +10,6 @@ def test_segment_ordered():
     segment = Segment(p2, p1)
     assert segment.p.x == pytest.approx(p1.x)
     assert segment.q.x == pytest.approx(p2.x)
-
-
-def test_is_left_turn():
-    a = Point(0, 0)
-    b = Point(1, 0)
-    c = Point(1, 1)
-    d = Point(0, 1)
-
-    assert is_left_turn(a, b, c)
-    assert is_left_turn(b, c, d)
-    assert is_left_turn(c, d, a)
-    assert is_left_turn(d, a, b)
-    assert not is_left_turn(d, c, b)
-    assert not is_left_turn(c, b, a)
-    assert not is_left_turn(b, a, d)
-    assert not is_left_turn(a, d, c)
 
 
 def test_intersection():
