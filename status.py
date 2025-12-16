@@ -1,3 +1,5 @@
+import weakref
+
 from sortedcontainers import SortedList
 
 from segment import Segment
@@ -14,7 +16,7 @@ class Status:
         )  # Optional marker to swap two segments. Added robustness to floating point errors.
 
         def __init__(self, status: "Status", segment: Segment):
-            self.status = status
+            self.status = weakref.proxy(status)  # avoid cyclic pointer garbage
             self.segment = segment
             self.less_than_id = None
 
