@@ -1,3 +1,5 @@
+import random
+
 from point import Point
 from segment import Segment
 from sweep_line import SweepLine
@@ -63,8 +65,39 @@ def test_grid():
 
 def test_empty_status():
     segments = [
-        Segment(Point(0, 0), Point(1, 1)),  # no intersection, status empty afterwards
+        Segment(Point(0, 0), Point(1, 1)),
         Segment(Point(5, 5), Point(10, 10)),
         Segment(Point(10, 5), Point(5, 10)),
+        Segment(Point(15, 15), Point(16, 16)),
     ]
     assert SweepLine(segments).intersection_points(round=2) == [Point(7.5, 7.5)]
+
+
+def test_intersection_count_equivalence():
+    MAX_SEGMENTS = 100
+    random.seed(236719)
+    segments = [
+        Segment(
+            Point(i, -random.random() * MAX_SEGMENTS**2),
+            Point(MAX_SEGMENTS**2 + i, random.random() * MAX_SEGMENTS**2),
+        )
+        for i in range(MAX_SEGMENTS)
+    ]
+
+    amount_reported = len(SweepLine(segments).intersection_points())
+    amount_counted = SweepLine(segments, report=False).intersection_points()
+    assert amount_reported == amount_counted
+
+
+def test_stress_test():
+    MAX_SEGMENTS = 1000
+    random.seed(236719)
+    segments = [
+        Segment(
+            Point(i, -random.random() * MAX_SEGMENTS**2),
+            Point(MAX_SEGMENTS**2 + i, random.random() * MAX_SEGMENTS**2),
+        )
+        for i in range(MAX_SEGMENTS)
+    ]
+
+    SweepLine(segments).intersection_points()  # Just make sure it runs without error

@@ -11,7 +11,9 @@ def main():
     with open(sys.argv[1], "r") as f:
         problems = parse_problems(f.readlines())
 
-    results = [len(SweepLine(problem).intersection_points()) for problem in problems]
+    results = [
+        SweepLine(problem, report=False).intersection_points() for problem in problems
+    ]
     for result in results:
         print(result)
 

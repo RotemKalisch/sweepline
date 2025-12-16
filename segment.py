@@ -25,7 +25,7 @@ class Segment:
         return self.p.y - (self.a() * self.p.x)
 
     def calculate_y(self, x: Point) -> float:
-        if x < self.p.x or x > self.q.x:
+        if x < self.p.x - Point.EPSILON or x > self.q.x + Point.EPSILON:
             raise ValueError("calculate_y out of bounds")
         return self.a() * x + self.b()
 
