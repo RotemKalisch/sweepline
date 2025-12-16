@@ -4,15 +4,17 @@ from segment import Segment
 
 
 class Status:
-    global_x: float = 0.0
+    x: float
 
     class Node:
+        status: "Status"
         segment: Segment
         less_than_id: (
             int | None
         )  # Optional marker to swap two segments. Added robustness to floating point errors.
 
-        def __init__(self, segment: Segment):
+        def __init__(self, status: "Status", segment: Segment):
+            self.status = status
             self.segment = segment
             self.less_than_id = None
 
@@ -27,13 +29,13 @@ class Status:
                 return True
             else:
                 return self.segment.calculate_y(
-                    Status.global_x
-                ) < other.segment.calculate_y(Status.global_x)
+                    self.status.x
+                ) < other.segment.calculate_y(other.status.x)
 
     bst: SortedList[Node]
 
     def __init__(self, initial_x: float, segments: list[Segment] = []):
-        Status.global_x = initial_x
+        self.x = initial_x
         self.bst = SortedList()
         for segment in segments:
             self.add(segment)
@@ -48,7 +50,7 @@ class Status:
         return self.bst[index].segment
 
     def __repr__(self) -> str:
-        return f"Status(global_x={Status.global_x}, bst={self.bst})"
+        return f"Status(x={Status.x}, bst={self.bst})"
 
     def is_ordered(self) -> bool:  # for validations
         for i in range(1, len(self.bst)):
@@ -57,13 +59,13 @@ class Status:
         return True
 
     def add(self, segment: Segment) -> None:
-        self.bst.add(Status.Node(segment))
+        self.bst.add(Status.Node(self, segment))
 
     def remove(self, segment: Segment) -> None:
-        self.bst.remove(Status.Node(segment))
+        self.bst.remove(Status.Node(self, segment))
 
     def index(self, segment: Segment) -> int:
-        retval = self.bst.index(Status.Node(segment))
+        retval = self.bst.index(Status.Node(self, segment))
         return retval
 
     def swap(self, segment1, segment2) -> int:
@@ -72,7 +74,7 @@ class Status:
         """
         if segment2.a() > segment1.a():
             raise ValueError("Segments are not in expected order for swap")
-        node = Status.Node(segment2)
+        node = Status.Node(self, segment2)
         self.bst.remove(node)
         node.less_than_id = segment1.id
         self.bst.add(node)

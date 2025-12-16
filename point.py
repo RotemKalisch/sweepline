@@ -1,5 +1,6 @@
 class Point:
     PRECISION: int = 5
+    EPSILON: float = 10 ** (-PRECISION)
 
     x: float
     y: float

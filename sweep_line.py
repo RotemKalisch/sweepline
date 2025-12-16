@@ -7,8 +7,6 @@ from event import Event, StartEvent, IntersectionEvent, EndEvent
 
 
 class SweepLine:
-    EPSILON: int = 10 ** (-Point.PRECISION)
-
     segments: list[Segment]
     events: SortedList[Event]
     status: Status
@@ -26,11 +24,6 @@ class SweepLine:
         retval = []
         while len(self.events) > 0:
             event = self.events.pop(0)
-            Status.global_x = event.x
-            # Giving a little nudge to avoid floating point issues
-            Status.global_x += SweepLine.EPSILON * (
-                1 if isinstance(event, StartEvent) else -1
-            )
             new_events = event.handle(self.status)
             for new_event in new_events:
                 if new_event not in self.events:

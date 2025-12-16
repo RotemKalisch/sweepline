@@ -18,11 +18,15 @@ SEGMENT3 = Segment(Point(0, -1), Point(6, -1))
 
 
 class MockStatus(list):
-    global_x: float = 0.0
+    x: float
+
+    def __init__(self, initial_x: float, segments: list[Segment] = []) -> None:
+        self.x = float(initial_x)
+        super().__init__(segments)
 
     def add(self, segment: Segment) -> None:
         self.append(segment)
-        self.sort(key=lambda segment: segment.calculate_y(MockStatus.global_x))
+        self.sort(key=lambda segment: segment.calculate_y(self.x))
 
     def swap(self, segment1: Segment, segment2: Segment) -> None:
         index1 = self.index(segment1)
@@ -31,25 +35,22 @@ class MockStatus(list):
 
 
 def test_start_event_handle():
-    MockStatus.global_x = 0
+    status = MockStatus(0, [SEGMENT0])
     event = StartEvent(x=0, segment=SEGMENT1)
-    status = MockStatus([SEGMENT0])
     assert event.handle(status) == [IntersectionEvent(3, SEGMENT0, SEGMENT1)]
     assert list(status) == [SEGMENT0, SEGMENT1]
 
 
 def test_end_event_handle():
-    MockStatus.global_x = 0
+    status = MockStatus(0, [SEGMENT0, SEGMENT1, SEGMENT2])
     event = EndEvent(x=0, segment=SEGMENT1)
-    status = MockStatus([SEGMENT0, SEGMENT1, SEGMENT2])
     assert event.handle(status) == [IntersectionEvent(2.5, SEGMENT0, SEGMENT2)]
     assert list(status) == [SEGMENT0, SEGMENT2]
 
 
 def test_intersection_event_handle():
-    MockStatus.global_x = 2.5
+    status = MockStatus(2.5, [SEGMENT3, SEGMENT0, SEGMENT2, SEGMENT1])
     event = IntersectionEvent(x=2.5, segment1=SEGMENT0, segment2=SEGMENT2)
-    status = MockStatus([SEGMENT3, SEGMENT0, SEGMENT2, SEGMENT1])
     future_events = event.handle(status)
     assert list(status) == [SEGMENT3, SEGMENT2, SEGMENT0, SEGMENT1]
     assert future_events == [
