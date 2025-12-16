@@ -42,3 +42,29 @@ def test_sweep_line_example3():
         Point(3.08, 8.03),
         Point(3.58, 7.58),
     ]
+
+
+def test_grid():
+    N = 100
+    segments = [Segment(Point(-N - i, i), Point(N + i, i)) for i in range(N)]
+
+    assert [] == SweepLine(segments).intersection_points(round=2)
+
+    expected_points = []
+    for j in range(1, 10):
+        expected_points += [Point(i / (2 * N) + (1 + 4 * j) / 2, i) for i in range(N)]
+        new_segments = [
+            Segment(Point(2 * i, -N), Point(2 * i + 1, N)) for i in range(1, j + 1)
+        ]
+        assert (
+            expected_points == SweepLine(segments + new_segments).intersection_points()
+        )
+
+
+def test_empty_status():
+    segments = [
+        Segment(Point(0, 0), Point(1, 1)),  # no intersection, status empty afterwards
+        Segment(Point(5, 5), Point(10, 10)),
+        Segment(Point(10, 5), Point(5, 10)),
+    ]
+    assert SweepLine(segments).intersection_points(round=2) == [Point(7.5, 7.5)]

@@ -5,8 +5,8 @@ class Point:
     y: float
 
     def __init__(self, x: float = 0, y: float = 0):
-        self.x = x
-        self.y = y
+        self.x = float(x)
+        self.y = float(y)
 
     def __repr__(self) -> str:
         return f"Point({self.x}, {self.y})"

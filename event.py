@@ -74,9 +74,7 @@ class StartEvent(Event):
         return f"StartEvent(x={self.x}, segment={self.segment})"
 
     def __eq__(self, other) -> bool:
-        assert (
-            other.event_type == EventType.START_EVENT and self.segment == other.segment
-        )
+        return other.event_type == EventType.START and self.segment == other.segment
 
     def handle(self, status: Status) -> list[Event]:
         future_events = []
