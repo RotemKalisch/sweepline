@@ -1,6 +1,5 @@
 from point import Point
 from segment import Segment
-from sweep_line import SweepLine
 
 from hw4 import parse_problems
 
@@ -8,7 +7,7 @@ from hw4 import parse_problems
 def test_parser_example():
     input_path = "./input.txt"
     with open(input_path, "r") as f:
-        problems = parse_problems(f.readlines())
+        problems = parse_problems(f.read().split())
 
     assert str(problems) == str(
         [
@@ -31,3 +30,15 @@ def test_parser_example():
             ],
         ]
     )
+
+
+def test_parser_space_invariant():
+    input_path = "./input.txt"
+    input_spaced_path = "./input_spaced.txt"
+    with open(input_path, "r") as f:
+        expected_problems = parse_problems(f.read().split())
+
+    with open(input_spaced_path, "r") as f:
+        actual_problems = parse_problems(f.read().split())
+
+    assert str(expected_problems) == str(actual_problems)

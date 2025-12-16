@@ -9,7 +9,7 @@ def main():
         raise TypeError("Only expected argument is input file path!")
 
     with open(sys.argv[1], "r") as f:
-        problems = parse_problems(f.readlines())
+        problems = parse_problems(f.read().split())
 
     results = [
         SweepLine(problem, report=False).intersection_points() for problem in problems
